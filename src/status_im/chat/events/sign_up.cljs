@@ -61,8 +61,8 @@
 
 (handlers/register-handler-fx
   :start-listening-confirmation-code-sms
-  [(re-frame/inject-cofx :sms-listener sign-up/sms-receive-handler)]
-  (fn [{:keys [db sms-listener]} _]
+  [(re-frame/trim-v)]
+  (fn [{:keys [db]} [sms-listener]]
     {:db (if-not (:confirmation-code-sms-listener db)
            (assoc db :confirmation-code-sms-listener sms-listener)
            db)}))

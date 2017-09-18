@@ -41,14 +41,16 @@
 (def enter-confirmation-code-event (partial confirmation-code-event true))
 (def incorrect-confirmation-code-event (partial confirmation-code-event false))
 
+(defn- sms-receive-handler [{confirmation-code :body}]
+  (when-let [matches (re-matches #"(\d{4})" confirmation-code)]
+    (dispatch [:sign-up-confirm (second matches)])))
+
 (def start-listening-confirmation-code-sms-event
   [:request-permissions
    [:receive-sms]
-   #(dispatch [:start-listening-confirmation-code-sms])])
-
-(defn sms-receive-handler [{confirmation-code :body}]
-  (when-let [matches (re-matches #"(\d{4})" confirmation-code)]
-    (dispatch [:sign-up-confirm (second matches)])))
+   (fn []
+     (let [listener (add-sms-listener sms-receive-handler)]
+       (dispatch [:start-listening-confirmation-code-sms listener])))])
 
 ;; -- Send confirmation code and synchronize contacts---------------------------
 (defn contacts-synchronised-event [message-id]

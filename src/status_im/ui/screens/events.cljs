@@ -75,11 +75,6 @@
           ((fn rand-id-seq []
              (cons (random/id) (lazy-seq (rand-id-seq))))))))
 
-(reg-cofx
- :sms-listener
- (fn [coeffects listen-event-creator]
-   (assoc coeffects :sms-listener (sms-listener-util/add-sms-listener listen-event-creator))))
-
 ;;;; FX
 
 (reg-fx
