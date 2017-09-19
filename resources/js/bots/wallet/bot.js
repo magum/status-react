@@ -352,7 +352,6 @@ function handleSend(params, context) {
         gasPrice: calculateGasPrice(params["bot-db"]["sliderValue"])
     };
 
-
     web3.eth.sendTransaction(data, function(error, hash) {
         if (error) {
             status.sendSignal("handler-data", {
@@ -449,9 +448,8 @@ function previewSend(params, context) {
     } else {
         markup = [firstRow];
     }
-
-    if (!(context["handler-data"]
-          && context["handler-data"]["status"] === "sent")) {
+    
+    if (context["handler-data"]["status"] === "not-confirmed") {
         var pendingRow = status.components.text(
             {
                 style: {
@@ -465,8 +463,7 @@ function previewSend(params, context) {
         markup.push(pendingRow);
     }
 
-    if (context["handler-data"] 
-        && context["handler-data"]["status"] === "failed") {
+    if (context["handler-data"]["status"] === "failed") {
         var errorRow = status.components.text(
             {
                 style: {
